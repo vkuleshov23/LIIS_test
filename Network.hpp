@@ -39,29 +39,18 @@ private:
 	using list_p = std::list<std::pair<std::string, std::string>>;
 
 public:
-	static QNetworkAccessManager* process_request() {
+	static QNetworkAccessManager* plan_process_request() {
 	    auto manager = new QNetworkAccessManager();
     	QObject::connect(
-                manager, 
-                &QNetworkAccessManager::finished,
-                [=](QNetworkReply *reply) {
-	        if (reply->error()) {
-	            qDebug() << QString("Error %1").arg(reply->errorString());
-	            exit(1);
-	        }
-	        std::cout << "API data has been recieved\n";
+                manager, &QNetworkAccessManager::finished, [=](QNetworkReply *reply) {
+	        
+	        if (reply->error()) { exit(1); }
 	        QByteArray responseData = reply->readAll();
 	        QJsonDocument doc = QJsonDocument::fromJson(responseData);
-			list_p data;
-			parseJsonData(doc, data);
-
-    		MosquittoMqtt mqtt(host, port, login, password, cafile, id, 60);
-    		mqtt.send_data(data);
-
+	        std::cout << "API data has been recieved\n";
+			process_api_data(doc);
 	        reply->deleteLater();
 	        manager->deleteLater();
-			mqtt.~MosquittoMqtt();
-
 			exit(0);
     	});
     	return manager;
@@ -69,10 +58,15 @@ public:
 
 private:
 
+	void static process_api_data(QJsonDocument& doc) {
+			list_p data;
+			parseJsonData(doc, data);
+    		MosquittoMqtt mqtt(host, port, login, password, cafile, id, 60);
+    		mqtt.send_data(data);
+	}
+
 	void static parseJsonData(QJsonDocument& doc, list_p& data) {
-
         data.push_back({API_INFO_TOPIC, doc[API_INFO][API_INFO_STATUS].toString().toStdString()});
-
 		QJsonValue vals = doc[TEMP_ITEMS][0][TEMP_VALUES];
         for(const QJsonValue& val : vals.toArray()) {
         	QJsonObject obj = val.toObject();
