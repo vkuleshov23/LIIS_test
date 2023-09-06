@@ -1,0 +1,3 @@
+/home/vadim/work/LIIS/mqtt/build/CMakeFiles/mqtt_temp.dir
+/home/vadim/work/LIIS/mqtt/build/CMakeFiles/edit_cache.dir
+/home/vadim/work/LIIS/mqtt/build/CMakeFiles/rebuild_cache.dir

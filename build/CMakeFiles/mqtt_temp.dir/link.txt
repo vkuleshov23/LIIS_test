@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/mqtt_temp.dir/main.cpp.o -o mqtt_temp  /usr/lib/x86_64-linux-gnu/libQt5Network.so.5.15.3 /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.15.3 -lmosquittopp 
